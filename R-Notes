@@ -317,11 +317,178 @@ expand.grid(mtry = 2:5,
 # =================================================== #
 # ########    第3部分基本运算和常用函数代码    ########
 # =================================================== #
+# 基本运算和常用函数部分，主要介绍常用的数学计算函数，逻辑运算函数，字符处理函数，随机分布函数，向量、数据框、矩阵相关的函数。
+# 常见运算与函数
+############################################ 基本运算
+
+1 + 2                          # 加
+3 - 2                          # 减
+3 * 4                          # 乘
+8 / 5                          # 除
+
+c(1:4) / c(2:5)
+c(1:6) / c(2:5) # 循环扩展
+
+4 ^ 3                          # 幂运算 底数^指数
+exp(1) # 自然常数为底的幂运算
+log(x = 25, base = 5) # 5为底25的对数
+sqrt(4) # 开平方
+abs(-5.6) # 绝对值
+sign(-5.6) # 符号函数
+round(3.45679, 2) # 保留指定位小数
+signif(3.245, 2) # 保留指定位有效数字
+ceiling(3.2) # 天花板
+floor(3.2) # 地板
+
+2 == 3
+2 != 3
+2 > 3
+2 >= 3
+2 < 3
+2 <= 3
+
+2 %in% 2:5
+
+(2 > 3) & (2 %in% 2:5) # 与
+(2 > 3) | (2 %in% 2:5) # 或
+!(2 %in% 2:5) # 非
+
+############################################ 向量相关函数
+
+v2 <- c(3,2,7,4,6,8,11,21)
+max(v2) # 最大值
+cummax(v2) # 累积最大值
+
+min(v2) # 最小值
+cummin(v2) # 累积最小值
+
+sum(v2) # 求和
+cumsum(v2) # 累积求和
+
+prod(v2) # 乘积
+cumprod(v2) # 累积乘积
+
+mean(v2) # 均值
+median(v2) # 中位数
+sd(v2) # 标准差
+var(v2) # 方差
+
+rev(v2) # 向量逆转
+sort(v2) # 向量重排
+
+v5 <- rep(v2, times = 2)
+table(v5) # 向量元素频数统计
+unique(v5) # 向量的取值水平
+
+# 索引函数
+which(v5==7)
+which.max(v5)
+which.min(v5)
+
+# 交集
+intersect(1:5, 4:7)
+# 差集
+setdiff(1:5, 4:7)
+# 并集
+union(1:5, 4:7)
+
+############################################ 数据框和矩阵相关函数
+
+dfs <- data.frame(
+  a=1:5,
+  b=3:7,
+  d=letters[1:5]
+)
+
+# 行列合并
+df1 <- dfs[1:3, ]
+df1
+df2 <- dfs[3:5, ]
+df2
+# 行合并
+rbind(df1, df2) # 要求列数、列名称相同
+# 列合并
+cbind(df1, df2) # 要求行数相同
+
+# 行列运算
+colMeans(dfs[,1:2])
+colSums(dfs[,1:2])
+rowMeans(dfs[,1:2])
+rowSums(dfs[,1:2])
+
+# apply(x, margin, function)
+apply(dfs[,1:2], 2, sd)
+apply(
+  dfs[,1:2],
+  2,
+  function(x){sum(is.na(x))}
+)
 
 
+# 对象结构信息
+str(dfs)
+summary(dfs)
+View(dfs)
+head(dfs, n = 2)
+tail(dfs, n = 2)
 
 
+# 矩阵运算
+m3 <- matrix(
+  c(5,7,3,4),
+  ncol=2,
+  byrow=T
+)
+m3
 
+m4 <- matrix(
+  c(5,7,3,4,8,9),
+  ncol=3,
+  byrow=T
+)
+m4
+
+t(m3)
+det(m3)
+m3 %*% m4
+solve(m3) # m3 %*% x = E
+solve(m3, m4) # m3 %*% x = m4
+
+############################################ 字符函数与分布相关函数
+
+# 连接成字符向量
+paste(1:5, collapse = "+")
+paste(letters[1:5], collapse = "-")
+paste(1:5, letters[1:8], sep = "~")
+paste0(1:5, letters[1:8])
+
+# 字符长度
+nchar(month.name)
+# 全部转大写
+toupper(month.name)
+# 全部转小写
+tolower(month.name)
+# 含有某个字符的元素的索引
+grep("Ju", month.name)
+# 替换字符
+gsub("e", "000", month.name)
+
+# 随机分布函数
+set.seed(24)
+sample(1:2, 12, replace = T) # 随机抽样
+rnorm(10, mean = 1, sd = 2)
+pnorm(1, mean = 1, sd = 2)
+qnorm(0.5, mean = 1, sd = 2)
+dnorm(1, mean = 1, sd = 2)
+
+plot(x = seq(-5, 7, length=1000),
+     y = dnorm(seq(-5, 7, length=1000),
+               mean = 1,
+               sd = 2),
+     type = "l",
+     ylim = c(0, 0.25))
+abline(h = 0,
+       v = 1)
 
 
 # =================================================== #
