@@ -491,41 +491,613 @@ abline(h = 0,
        v = 1)
 
 
+
 # =================================================== #
 # ########    第4部分语法代码    ########
 # =================================================== #
+# 语法部分，主要介绍R语言中循环语句、条件语句的构建，如何自定义函数。
+# 循环结构 向量化编程、泛函式编程
+# for循环
+for (x in c(-2, 3, 0, 4)) {
+  print(x)
+  y = abs(x)
+  z = y^3
+  print(z)
+  print("-------")
+}
 
+
+
+# while循环
+v1 <- 1:5
+i <- 1
+while (i <= length(v1)) {
+  print(i)
+  
+  print(sum(v1[1:i]))
+  i = i + 1
+  
+  print(i)
+  print("####")
+}
+
+
+# 示例
+df <- data.frame(c1 = 2:5,
+                 c2 = 4:7,
+                 c3 = -19:-16)
+
+for (i in 1:nrow(df)) {
+  print(sum(df[i, ]))
+}
+
+
+j = 1
+while(j <= nrow(df)) {
+  print(sum(df[j, ]))
+  j = j + 1
+}
+
+# next
+# break
+
+######################################################
+
+# 条件结构
+a <- 7
+if(a > 6) {
+  print("a>6")
+}
+
+a <- 5
+if(a > 6) {
+  print("a>6")
+} else {
+  print('a<=6')
+}
+
+a <- 2
+if(a > 6) {
+  print("a>6")
+} else if (a>3){
+  print('a>3')
+} else {
+  print('a<=3')
+}
+
+
+s = 40
+if(s %% 2 == 0) {
+  print("s是偶数。")
+} else {
+  print("s是奇数。")
+}
+ifelse(55 %% 2 == 0, "偶数", "奇数")
+
+# 函数构建
+
+f1 <- function(aug1){
+  res1 <- 1:aug1
+  res2 <- prod(res1)
+  return(res2)
+}
+f1(aug1 = 10)
+f1(10)
+f2 <- function(aug1, aug2=4){
+  res <- aug1 + aug2
+  return(res)
+}
+
+f2(34)
+f2(34, 5)
 
 
 # =================================================== #
 # ########    第5部分数据整理代码    ########
 # =================================================== #
+# 数据整理部分，主要介绍数据文件的导入导出、批量导入，依托tidyverse包进行行过滤、列筛选、分组统计汇总、数据框合并、列的分解与合并、长宽数据转换等。
+# 数据操作——暨tidyverse包函数精讲
+library(tidyverse)
+# 组成包介绍
+# https://www.tidyverse.org/
+
+######################################################
+
+# csv数据导入
+rawdata <- read.table(file.choose(), header = T, sep = ",")
+head(rawdata, n=4)
+tail(rawdata, n=10)
+rawdata[95:105,]
+str(rawdata)
+# read.csv(file.choose())
+# data.table::fread(file.choose())
+
+# csv数据导出
+write.table(rawdata,
+            "test.csv",
+            sep = ",",
+            row.names = F)
+# write.csv()
+# data.table::fwrite()
+
+# 读取excel表
+library(readxl)
+# excel_sheets(file.choose())
+data1 <- read_excel(file.choose())
+
+
+# 批量读取数据
+files <- list.files(".\\房地产PB\\")
+files
+paths <- paste(".\\房地产PB\\", files, sep = "")
+paths
+
+df <- list()
+for (i in 1:length(paths)) {
+  datai <- read_excel(paths[i])
+  datai$object <- str_sub(files[i], start = 1, end = -6)
+  df[[i]] <- datai
+  print(i)
+}
+
+df_all <- bind_rows(df)
+
+
+######################################################
+
+
+# dplyr
+library(dplyr)
+head(ToothGrowth)
+str(ToothGrowth)
+
+# 新增变量和变量重新赋值
+toothgrowth2 <- mutate(ToothGrowth,
+                       len = len^2,
+                       nv = 1:nrow(ToothGrowth),
+                       nv2 = ifelse(nv > median(nv), "H", "L"))
+head(toothgrowth2)
+
+
+# 筛选行（样本）
+toothgrowth3 <- filter(toothgrowth2,
+                       nv %in% 1:50,
+                       nv2 == "H")
+toothgrowth3
+
+# 筛选列（变量）
+toothgrowth4 <- select(toothgrowth3,
+                       c(2,4))
+head(toothgrowth4)
+
+# 分组计算
+summarise(ToothGrowth, len_max = max(len), len_min = min(len))
+summarise(group_by(ToothGrowth, supp), len_max = max(len))
+summarise(group_by(ToothGrowth, dose), len_max = max(len))
+summarise(group_by(ToothGrowth, dose, supp), len_max = max(len))
+
+
+# 管道操作符
+library(magrittr)
+ToothGrowth %>%
+  mutate(nv = 1:nrow(ToothGrowth)) %>%
+  filter(nv %in% 1:50) %>%
+  select(1:2) %>%
+  group_by(supp) %>%
+  summarise(len_max = max(len)) %>%
+  as.data.frame()
+
+
+# 连接（合并）数据框
+library(dplyr)
+df1 <- data.frame(c1 = 2:5,
+                  c2 = LETTERS[2:5])
+df1
+df2 <- data.frame(c3 = LETTERS[c(2:3,20:23)],
+                  c4 = sample(1:100, size = 6))
+df2
+
+# 左连接
+left_join(df1, df2, by = c('c2' = 'c3'))
+df1 %>% left_join(df2, by = c('c2' = 'c3'))
+
+# 右连接
+df1 %>% right_join(df2, by = c('c2' = 'c3'))
+
+# 全连接
+df1 %>% full_join(df2, by = c('c2' = 'c3'))
+
+# 内连接
+df1 %>% inner_join(df2, by = c('c2' = 'c3'))
+
+
+
+######################################################
+
+# 列的分裂与合并
+library(tidyr)
+# 分裂
+df3 <- data.frame(c5 = paste(letters[1:3], 1:3, sep = "-"),
+                  c6 = paste(letters[1:3], 1:3, sep = "."),
+                  c4 = c("B", "B", "B"),
+                  c3 = c("H", "M", "L"))
+df3
+df4 <- df3 %>%
+  separate(col = c5, sep = "-", into = c("c7", "c8"), remove = F) %>%
+  separate(col = c6, sep = "\\.", into = c("c9", "c10"), remove = T)
+df4
+
+
+# 合并
+df4 %>%
+  unite(col = "c11", c("c7", "c8"), sep = "_", remove = F) %>%
+  unite(col = "c12", c("c9", "c10"), sep = ".", remove = T) %>%
+  unite(col = "c13", c("c4", "c3"), sep = "", remove = F)
+
+#########
+
+# 长宽数据转换
+library(tidyr)
+# 宽数据转长数据
+set.seed(42)
+df5 <- data.frame(time = rep(2011:2013, each=3),
+                  area = rep(letters[1:3], times=3),
+                  pop = sample(100:1000, 9),
+                  den = round(rnorm(9, mean = 3, sd = 0.1), 2),
+                  mj = sample(8:12, 9, replace = T))
+df5
+
+df6 <- df5 %>%
+  pivot_longer(cols = -c(1:2),
+               names_to = "varb",
+               values_to = "value")
+df6
+
+# 长数据转宽数据
+df6 %>%
+  pivot_wider(names_from = c(area, varb),
+              values_from = value)
+
 
 
 # =================================================== #
 # ########    第6部分R语言数据可视化基础(1)-基础绘图函数部分代码  ########
 # =================================================== #
+# 基础绘图函数部分主要介绍全局设置函数par()函数的常用设置，保存图片，plot函数和低级绘图函数，条形图、箱线图、直方图、密度曲线、马赛克图的绘制等。
+# 这部分用到的函数都是R语言自带的函数，属于R语言数据可视化内容的基础部分。
+# R语言绘图
+
+# par函数
+# 保存初始设定
+inipar <- par(no.readonly = T)
+# 恢复初始设定
+par(inipar)
+
+par(mfrow = c(2,3)) # mfcol
+plot(1:30)
+plot(1:30)
+plot(1:30)
+
+# 保存图片
+png("pic.png")
+# 绘图过程
+plot(1:30)
+# 关闭当前绘图设备
+dev.off()
 
 
+#########
+
+# plot函数
+plot(x = -1:6,
+     y = 2*(-1:6),
+     type = "o",
+     family = "serif",
+     xlim = c(-5,7),
+     ylim = c(-5,14),
+     ylab = "y----",
+     xlab = "----x",
+     main = "plot示例")
+
+# lines函数
+lines(x = 1:6, y = 2:7, col = "blue")
+# abline函数
+abline(a = 3, b = 2, col = "green")
+abline(v = 0, h = 3)
+# text函数
+text(x = 3, y = 2.5, labels = "y=3")
+
+#########
+set.seed(432)
+d0 <- data.frame(rs1 = sample(letters[1:4], 100, replace = T),
+                 rs2 = sample(LETTERS[21:22], 100, replace = T))
+
+# barplot函数
+barplot(1:5, names.arg = letters[1:5])
+barplot(table(d0$rs1), main = "barplot")
+
+# boxplot函数
+boxplot(ToothGrowth$len)
+boxplot(len ~ supp, data = ToothGrowth)
+
+
+# hist函数
+hist(rnorm(1000), breaks = 15)
+
+# 直方图叠加密度曲线
+set.seed(10)
+d1 <- rnorm(1000)
+hist(d1, breaks = 100, freq = F, main = "Histogram")
+lines(density(d1), col = "blue", lwd=2)
+d2 <- seq(min(d1), max(d1), length=10000)
+lines(d2, dnorm(d2), col = "red", lwd=2)
+
+# 马赛克图
+table(d0$rs1)
+table(d0$rs2)
+table(d0$rs1, d0$rs2)
+mosaicplot(table(d0$rs1, d0$rs2))
 
 
 # =================================================== #
 # ########    第6部分R语言数据可视化基础（2）-ggplot2基础绘图部分代码    ########
 # =================================================== #
+# ggplot2基础绘图部分主要介绍如何使用ggplot2包的函数绘制点图、线图、条形图、箱线图、直方图、密度曲线。
+# ggplot2包
+library(tidyverse)
+set.seed(432)
+d3 <- data.frame(
+  ind = 1:100,
+  rn = rnorm(100),
+  rt = rt(100, df=5),
+  rs1 = sample(letters[1:3], 100, replace = T),
+  rs2 = sample(LETTERS[21:22], 100, replace = T)
+)
 
+# 点图
+ggplot() +
+  geom_point(data = d3,
+             mapping = aes(x=rn, y=rt, fill=rs2),
+             shape = 21,
+             size = 5)
+
+# 线图
+ggplot(d3, aes(x=ind, y=rn)) +
+  geom_line(size=1.2)
+
+# 条形图
+d3 %>%
+  ggplot(aes(x=rs1)) +
+  geom_bar(fill = "white", color = "black")
+
+d3 %>%
+  group_by(rs1) %>%
+  summarise(mean_rn = mean(rn)) %>%
+  ggplot(aes(x=rs1, y=mean_rn)) +
+  geom_col(fill="grey", colour="black", width = 0.5)
+
+d3 %>%
+  group_by(rs1, rs2) %>%
+  summarise(m = median(rn)) %>%
+  ggplot(aes(x = rs1, y = m, fill = rs2)) +
+  geom_col(position = "dodge")
+
+# 箱线图
+ggplot(ToothGrowth, aes(y=len)) +
+  geom_boxplot()
+
+ggplot(ToothGrowth, aes(x=supp, y=len)) +
+  geom_boxplot()
+
+ggplot(d3, aes(x=rs1, y=rn, fill=rs2)) +
+  geom_boxplot()
+
+# 直方图
+ggplot(d3, aes(x=rn, fill=rs2)) +
+  geom_histogram(bins = 20, alpha=0.1, colour="black")
+
+# 密度曲线
+ggplot(d3, aes(x=rn, fill=rs2)) +
+  geom_density(alpha=0.1) +
+  labs(x = "aa", y = "bb", title = "density") +
+  theme(plot.title = element_text(hjust = 0.5))
 
 
 # =================================================== #
 # ########    7.1-描述性统计和假设检验代码    ########
 # =================================================== #
+# 首先介绍因子，然后介绍如何计算常用描述性统计量、偏度、峰度、相关系数及列联表，假设检验部分依次介绍了正态性分布检验、方差齐性检验、t检验、方差分析以及常用非参数检验。
+# 因子
+set.seed(42)
+l3 <-sample(letters[1:3], 10, replace = T)
+l3
+as.factor(l3)
+factor(l3)
+# factor()
 
 
+# 描述性统计
+set.seed(432)
+d3 <- data.frame(
+  ind = 1:1000,
+  rn = rnorm(1000),
+  rn2 = rnorm(1000, mean = 2, sd = 3),
+  rt = rt(1000, df=5),
+  rs1 = as.factor(sample(letters[1:3], 1000, replace = T)),
+  rs2 = as.factor(sample(LETTERS[21:22], 1000, replace = T))
+)
+
+# 描述性统计结果
+summary(d3)
+library(skimr)
+skim(d3)
+
+# 偏度
+e1071::skewness(d3$rn)
+# 峰度
+e1071::kurtosis(d3$rn2)
+
+# 相关系数
+cor(d3$rn, d3$rt)
+cor(d3[,2:4])
+# 相关性检验
+cor.test(d3$rn, d3$rt)
+library(psych)
+corr.test(d3[,1:3])
+
+# 列联表
+table(d3$rs1)
+prop.table(table(d3$rs1))
+
+
+######################################################
+# 假设检验
+
+# 正态分布检验
+# shapiro.test()
+library(rstatix)
+head(ToothGrowth)
+# 单一变量检验
+ToothGrowth %>%
+  shapiro_test(len)
+# 分组检验
+ToothGrowth %>%
+  group_by(dose) %>%
+  shapiro_test(len)
+
+###########################
+
+# 方差齐性检验
+# 两组检验
+var.test(len ~ supp, data = ToothGrowth)
+# 两组及以上的检验
+bartlett.test(len ~ dose, data = ToothGrowth)
+
+##########################
+
+# 均值检验
+# t检验
+t.test(ToothGrowth$len,
+       mu = 18)
+
+t.test(len ~ supp,
+       data = ToothGrowth,
+       var.equal = T)
+
+# 方差分析
+ToothGrowth$dose <- as.factor(ToothGrowth$dose)
+aovfit <- aov(len ~ dose, data = ToothGrowth)
+aovfit
+summary(aovfit)
+
+##########################
+
+# 非参数检验
+# 差异检验：Wilcoxon秩和检验(Mann-Whitney U检验)，适用于两组数据
+wilcox.test(len ~ supp, data = ToothGrowth, exact = F)
+# 差异检验：Kruskal-Wallis检验，适用于两组及以上的数据
+kruskal.test(len ~ dose, data = ToothGrowth)
+
+# 方差齐性非参数检验
+fligner.test(len ~ dose, data = ToothGrowth)
 
 
 # =================================================== #
 # ########    7.2-线性回归模型代码    ########
 # =================================================== #
+# # 因子
+set.seed(42)
+l3 <-sample(letters[1:3], 10, replace = T)
+l3
+as.factor(l3)
+factor(l3)
+# factor()
 
+
+# 描述性统计
+set.seed(432)
+d3 <- data.frame(
+  ind = 1:1000,
+  rn = rnorm(1000),
+  rn2 = rnorm(1000, mean = 2, sd = 3),
+  rt = rt(1000, df=5),
+  rs1 = as.factor(sample(letters[1:3], 1000, replace = T)),
+  rs2 = as.factor(sample(LETTERS[21:22], 1000, replace = T))
+)
+
+# 描述性统计结果
+summary(d3)
+library(skimr)
+skim(d3)
+
+# 偏度
+e1071::skewness(d3$rn)
+# 峰度
+e1071::kurtosis(d3$rn2)
+
+# 相关系数
+cor(d3$rn, d3$rt)
+cor(d3[,2:4])
+# 相关性检验
+cor.test(d3$rn, d3$rt)
+library(psych)
+corr.test(d3[,1:3])
+
+# 列联表
+table(d3$rs1)
+prop.table(table(d3$rs1))
+
+
+######################################################
+# 假设检验
+
+# 正态分布检验
+# shapiro.test()
+library(rstatix)
+head(ToothGrowth)
+# 单一变量检验
+ToothGrowth %>%
+  shapiro_test(len)
+# 分组检验
+ToothGrowth %>%
+  group_by(dose) %>%
+  shapiro_test(len)
+
+###########################
+
+# 方差齐性检验
+# 两组检验
+var.test(len ~ supp, data = ToothGrowth)
+# 两组及以上的检验
+bartlett.test(len ~ dose, data = ToothGrowth)
+
+##########################
+
+# 均值检验
+# t检验
+t.test(ToothGrowth$len,
+       mu = 18)
+
+t.test(len ~ supp,
+       data = ToothGrowth,
+       var.equal = T)
+
+# 方差分析
+ToothGrowth$dose <- as.factor(ToothGrowth$dose)
+aovfit <- aov(len ~ dose, data = ToothGrowth)
+aovfit
+summary(aovfit)
+
+##########################
+
+# 非参数检验
+# 差异检验：Wilcoxon秩和检验(Mann-Whitney U检验)，适用于两组数据
+wilcox.test(len ~ supp, data = ToothGrowth, exact = F)
+# 差异检验：Kruskal-Wallis检验，适用于两组及以上的数据
+kruskal.test(len ~ dose, data = ToothGrowth)
+
+# 方差齐性非参数检验
+fligner.test(len ~ dose, data = ToothGrowth)
 
 
 
@@ -533,9 +1105,77 @@ abline(h = 0,
 # =================================================== #
 # ########    7.3-logistic回归模型代码    ########
 # =================================================== #
+# 主要介绍使用R语言构建logistic回归模型用于分类问题的相关内容，
+# 内容包括数据读取与整理，模型构建，格式化输出，使用模型进行预测，使用ROC、AUC、混淆矩阵评估模型预测性能等。
 
+# logistic回归
+# 读取数据
+bcdata <- read.csv(file.choose())
 
+# 查看数据概况
+library(skimr)
+skim(bcdata)
 
+# 删除含有缺失值的样本
+bcdata <- na.omit(bcdata)
+
+# 变量类型修正
+bcdata$class <- factor(bcdata$class)
+
+# 查看分类型变量编码
+contrasts(bcdata$class)
+# 查看分类型变量频数分布
+table(bcdata$class)
+
+# logistic回归建模
+glmfit <- glm(class ~ .-ID, data = bcdata, family = binomial())
+glmfit
+summary(glmfit)
+
+# 格式化输出
+library(stargazer)
+# 在console显示表格，输出到本地
+stargazer(glmfit, type="text", out="logit.htm")
+
+# 预测概率
+predprob <- predict(glmfit, newdata = bcdata, type = "response")
+# 有些模型的predict输出的概率是矩阵，注意识别。
+
+# ROC曲线
+library(pROC)
+rocs <- roc(response = bcdata$class, # 实际类别
+            predictor = predprob) # 预测概率
+# 注意Setting direction
+
+# ROC曲线
+plot(
+  rocs, # roc对象
+  print.auc = TRUE, # 打印AUC值
+  auc.polygon = TRUE, # 显示AUC区域
+  grid = T, # 网格线
+  max.auc.polygon = T, # 显示AUC=1的区域
+  auc.polygon.col = "skyblue", # AUC区域填充色
+  print.thres = T, # 打印最佳临界点
+  legacy.axes = T # 横轴显示为1-specificity
+)
+
+# 约登法则
+bestp <- rocs$thresholds[
+  which.max(rocs$sensitivities + rocs$specificities - 1)
+]
+bestp
+
+# 预测分类
+predlab <- as.factor(
+  ifelse(predprob > bestp, "malignant", "benign")
+)
+
+# 混淆矩阵
+library(caret)
+confusionMatrix(data = predlab, # 预测类别
+                reference = bcdata$class, # 实际类别
+                positive = "malignant",
+                mode = "everything")
 
 
 
