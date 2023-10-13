@@ -23,7 +23,7 @@
 # https://rstudio.com/products/rstudio/download/
 # 网站说明task，packages list，package page
 # 界面布局、显示、中文编码问题说明
-######################################################
+# =================================================== #
 
 # <包>
 # 包的安装
@@ -39,7 +39,7 @@ update.packages() # 更新所有包，逐个提示
 # 移除包
 remove.packages("car")
 
-######################################################
+# =================================================== #
 
 # 获取帮助
 # 某个函数的帮助
@@ -65,6 +65,7 @@ file.choose()
 # 直接鼠标点击
 save()
 save.image()
+
 # 加载R文件
 load(file.choose())
 
@@ -123,17 +124,17 @@ as.logical(0)
 
 
 # 特殊值
-NA
+NA # 缺失值
 is.na(NA)
 
-NULL
+NULL # 空值
 is.null(NULL)
 
-NaN
+NaN # 表示不是一个数字（Not a Number）的特殊值
 is.nan(NaN)
 
-Inf
--Inf
+Inf # 表示正无穷的特殊值
+-Inf # 表示负无穷的特殊值
 is.infinite(-Inf)
 
 # 示例
@@ -157,19 +158,19 @@ LETTERS
 month.name
 month.abb
 
-v1 <- 1:5
-v2 <- c(3,2,7,4,6)
-v3 <- rep(v2, times = 2)
-v4 <- rep(v2, each = 2)
-v5 <- rep(v2, times = 2, each = 2)
-v6 <- seq(from = 2, to = 9, by = 3)
-v7 <- seq(from = 2, to = 9, length.out = 3)
-v8 <- seq(from = 2, by = 3, length.out = 4)
+v1 <- 1:5;v1
+v2 <- c(3,2,7,4,6);v2
+v3 <- rep(v2, times = 2);v3 # repeat重复
+v4 <- rep(v2, each = 2);v4
+v5 <- rep(v2, times = 2, each = 2);v5
+v6 <- seq(from = 2, to = 9, by = 3);v6 # sequence数列方差，从2到9，步长为3
+v7 <- seq(from = 2, to = 9, length.out = 3);v7 # 输出字符数为3
+v8 <- seq(from = 2, by = 3, length.out = 4);v8
 
 v9 <- c('aic', 'bic', 'cp')
 rep(v9, each = 3)
 
-c(T,T, F,T)
+c(T,T, F,T) # combine/concatenate 生成一个向量
 
 # 强制转换为同一种类型的数据
 c(T, "aic")
@@ -183,11 +184,11 @@ v2
 length(v9)
 
 # 向量索引
-v8[3]
-v8[c(1, 3, 5)]
-v8[-c(1, 4)]
-v2[c('aic', 'cp')]
-v1[v1%%2==1]
+v8[3] # 第3个元素
+v8[c(1, 3, 5)] # 第1,3,5个元素
+v8[-c(1, 4)] # 表示从 v8 向量中删除第 1 和 4 个元素。
+v2[c('aic', 'cp')] # 提取名为 "aic" 和 'cp' 的元素。
+v1[v1%%2==1] # v1中提取满足元素除以2余数为1的元素
 
 
 # 矩阵
@@ -195,7 +196,7 @@ m1 <- matrix(
   1:6,
   nrow = 2,
   # ncol = 3,
-  byrow = F,
+  byrow = F, # 按列填充
   dimnames = list(c('r1', 'r2'),
                   c('c1', 'c2', 'c3'))
 )
@@ -223,7 +224,7 @@ ncol(m1)
 nrow(m1)
 
 # 矩阵索引
-m2[1,2] # 返回向量
+m2[1,2] # 返回向量的第一行第二列
 m2[1,] # 返回向量
 m2[,2] # 返回向量
 m2[1:2,2:3] # 返回矩阵
@@ -265,14 +266,14 @@ l1[['com2']] # 返回矩阵
 l1[[2]] # 返回矩阵
 
 l1['com1'] # 返回列表
-l1[2] # 返回列表
+l1[2] # 返回矩阵
 
 # 新建成分
 l1$com3 <- 3:6
 l1
 
 # 释放列表
-unlist()
+unlist(l1)
 
 # 数据框（特殊的列表）
 df1 <- data.frame(
@@ -327,19 +328,22 @@ expand.grid(mtry = 2:5,
 8 / 5                          # 除
 
 c(1:4) / c(2:5)
-c(1:6) / c(2:5) # 循环扩展
+c(1:6) / c(2:5)                # 循环扩展
 
 4 ^ 3                          # 幂运算 底数^指数
-exp(1) # 自然常数为底的幂运算
-log(x = 25, base = 5) # 5为底25的对数
-sqrt(4) # 开平方
-abs(-5.6) # 绝对值
-sign(-5.6) # 符号函数
-round(3.45679, 2) # 保留指定位小数
-signif(3.245, 2) # 保留指定位有效数字
-ceiling(3.2) # 天花板
-floor(3.2) # 地板
+exp(1)                         # 自然常数为底的幂运算
+log(x = 25, base = 5)          # 5为底25的对数
+sqrt(4)                        # 开平方square root
+abs(-5.6)                      # 绝对值absolute value
+sign(-5.6)                     # 符号函数
+round(3.45679, 2)              # 保留指定位小数
+signif(3.245, 2)               # 保留指定位有效数字
+ceiling(3.2)                   # 天花板，向上取整
+floor(3.2)                     # 地板，向下取整
 
+
+
+# 值对比和逻辑判断
 2 == 3
 2 != 3
 2 > 3
@@ -347,58 +351,61 @@ floor(3.2) # 地板
 2 < 3
 2 <= 3
 
-2 %in% 2:5
+2 %in% 2:5                 # 检查数字 2 是否存在于 2 到 5 的整数序列中
 
-(2 > 3) & (2 %in% 2:5) # 与
-(2 > 3) | (2 %in% 2:5) # 或
-!(2 %in% 2:5) # 非
+(2 > 3) & (2 %in% 2:5)     # 与
+(2 > 3) | (2 %in% 2:5)     # 或
+!(2 %in% 2:5)              # 非
 
 ############################################ 向量相关函数
 
 v2 <- c(3,2,7,4,6,8,11,21)
-max(v2) # 最大值
-cummax(v2) # 累积最大值
+max(v2)                   # 最大值
+cummax(v2)                # 累积最大值,它返回一个与原始向量长度相同的新向量;
+# 'cummax()'，其中每个元素是原始向量中该位置及之前位置的最大值（包括当前位置）。
 
-min(v2) # 最小值
-cummin(v2) # 累积最小值
+min(v2)                   # 最小值
+cummin(v2)                # 累积最小值
 
-sum(v2) # 求和
-cumsum(v2) # 累积求和
+sum(v2)                   # 求和
+cumsum(v2)                # 累积求和,每个元素是原始向量中该位置及之前位置的总和。
 
-prod(v2) # 乘积
-cumprod(v2) # 累积乘积
+prod(v2)                  # 乘积
+cumprod(v2)               # 累积乘积
 
-mean(v2) # 均值
-median(v2) # 中位数
-sd(v2) # 标准差
-var(v2) # 方差
+mean(v2)                  # 均值
+median(v2)                # 中位数
+sd(v2)                    # 标准差
+var(v2)                   # 方差
 
-rev(v2) # 向量逆转
-sort(v2) # 向量重排
+rev(v2)                   # 向量逆转
+sort(v2)                  # 向量重排,将向量中的元素按升序进行排序，并返回排序后的新向量
+sorted_v2 <- sort(v2)     # 新向量接收，原始向量不变
 
-v5 <- rep(v2, times = 2)
-table(v5) # 向量元素频数统计
-unique(v5) # 向量的取值水平
+v5 <- rep(v2, times = 2)  ; print(v5)
+table(v5)                 # 向量元素频数统计
+unique(v5)                # 向量的取值水平
 
 # 索引函数
-which(v5==7)
-which.max(v5)
-which.min(v5)
+which(v5==7)              #  返回元素7的位置索引
+which.max(v5)             #  返回v5中最大元素的位置索引
+which.min(v5)             #  返回v5中最小元素的位置索引
 
 # 交集
 intersect(1:5, 4:7)
 # 差集
-setdiff(1:5, 4:7)
+setdiff(1:5, 4:7)         # 前减后，保留前
 # 并集
-union(1:5, 4:7)
+union(1:5, 4:7)           # 自动去重求和
 
 ############################################ 数据框和矩阵相关函数
 
-dfs <- data.frame(
+dfs <- data.frame( #按列排布数据
   a=1:5,
   b=3:7,
   d=letters[1:5]
 )
+dfs
 
 # 行列合并
 df1 <- dfs[1:3, ]
@@ -417,20 +424,25 @@ rowMeans(dfs[,1:2])
 rowSums(dfs[,1:2])
 
 # apply(x, margin, function)
-apply(dfs[,1:2], 2, sd)
+# x：要应用函数的矩阵或数组。
+# margin：指定应用函数的维度。如果 margin = 1，则表示按行应用函数；如果 margin = 2，则表示按列应用函数。
+# function：要应用的函数，可以是内置函数、自定义函数或匿名函数。
+
+apply(dfs[,1:2], 2, sd) # 对dfs的第一二列求标准差
+
 apply(
-  dfs[,1:2],
-  2,
-  function(x){sum(is.na(x))}
+  dfs[,1:2],  # 第一二列
+  2,          #  按列应用
+  function(x){sum(is.na(x))}  # 计算每列中的缺失值数量
 )
 
 
 # 对象结构信息
-str(dfs)
-summary(dfs)
-View(dfs)
-head(dfs, n = 2)
-tail(dfs, n = 2)
+str(dfs) # 输出 dfs 数据框的结构，包括列名、列数据类型和前几行的值等。
+summary(dfs) # 输出关于每列数据的统计摘要，如最小值、最大值、中位数、均值等
+View(dfs)  # 在一个新窗口中查看数据框 dfs 的完整内容。
+head(dfs, n = 2) # 前2行
+tail(dfs, n = 2) # 后2行 trail（尾部）
 
 
 # 矩阵运算
@@ -448,11 +460,11 @@ m4 <- matrix(
 )
 m4
 
-t(m3)
-det(m3)
-m3 %*% m4
-solve(m3) # m3 %*% x = E
-solve(m3, m4) # m3 %*% x = m4
+t(m3)     # 转置后得到一个新矩阵(并不改变原来的矩阵m3)
+det(m3)   # 计算行列式的值
+m3 %*% m4 # 两个矩阵相乘
+solve(m3) # 解线性方程组m3 %*% x = E
+solve(m3, m4) # 解线性方程组m3 %*% x = m4
 
 ############################################ 字符函数与分布相关函数
 
@@ -462,34 +474,64 @@ paste(letters[1:5], collapse = "-")
 paste(1:5, letters[1:8], sep = "~")
 paste0(1:5, letters[1:8])
 
+
+# 获取当前的日期和时间
+current_datetime <- Sys.time()
+print(current_datetime)
+formatted_datetime <- format(current_datetime, "%Y-%m-%d %H:%M:%S")
+print(current_datetime)
+
+# 输出所有月份
+month.abb # 缩写
+month.name # 全称
 # 字符长度
-nchar(month.name)
+nchar(month.name) # 月份中包含的字符个数
 # 全部转大写
 toupper(month.name)
 # 全部转小写
 tolower(month.name)
 # 含有某个字符的元素的索引
-grep("Ju", month.name)
+grep("Jun", month.name)
 # 替换字符
-gsub("e", "000", month.name)
+gsub("e", "***", month.name)
 
 # 随机分布函数
 set.seed(24)
-sample(1:2, 12, replace = T) # 随机抽样
+# 使用有放回随机抽样从 1 到 2 的整数中抽取 12 个样本。
+sample(1:2, 12, replace = T)
+ # 返回一个包含 12 个元素的随机整数向量。
+
+# 从指定均值和标准差的正态分布中抽取 10 个随机数。
 rnorm(10, mean = 1, sd = 2)
-pnorm(1, mean = 1, sd = 2)
+ # 返回一个包含 10 个元素的随机数向量，这些随机数来自N~（1，4）正态分布。
+
+# 计算正态分布的累积分布函数 (CDF) 在给定值处的概率。
+pnorm(1, mean = 1, sd = 2) 
+# 返回一个概率值，表示在均值为 1、标准差为 2 的正态分布中，随机变量小于或等于 1 的概率。
+
+# 使用正态分布的累积分布函数的反函数，计算给定概率值对应的分位数 (Quantile)。
 qnorm(0.5, mean = 1, sd = 2)
+# 返回一个数值，表示在均值为 1、标准差为 2 的正态分布中，累积概率为 0.5 的分位数。
+
+# 计算正态分布的概率密度函数 (PDF) 在给定值处的概率密度值。
 dnorm(1, mean = 1, sd = 2)
+# 返回一个数值，表示在均值为 1、标准差为 2 的正态分布中，随机变量等于 1 的概率密度值。
 
-plot(x = seq(-5, 7, length=1000),
+
+# 绘制正态分布曲线图
+plot(x = seq(-5, 7, length=1000),# 生成 x 坐标轴的值，从 -5 到 7，共 1000 个点。
      y = dnorm(seq(-5, 7, length=1000),
-               mean = 1,
-               sd = 2),
-     type = "l",
-     ylim = c(0, 0.25))
-abline(h = 0,
-       v = 1)
+     mean = 1, sd = 2),# 使用指定均值和标准差的正态分布计算对应 x 值处的概率密度值。
+     type = "l", # 将图形类型设置为绘制连线。
+     ylim = c(0, 0.25)) # 设置 y 坐标轴的范围。
+abline(h = 0,v = 1) # 绘制水平线和垂直线，分别位于 y = 0 和 x = 1 处。
 
+# 更直观的写法：
+x <- seq(-5, 7, length = 1000)
+y <- dnorm(x, mean = 1, sd = 2)
+# par(mar = c(3, 3, 2, 1)) # 调整四个边的边距值
+plot(x, y, type = "l", ylim = c(0, 0.25))
+abline(h = 0, v = 1)
 
 
 # =================================================== #
@@ -502,8 +544,9 @@ for (x in c(-2, 3, 0, 4)) {
   print(x)
   y = abs(x)
   z = y^3
-  print(z)
+  print(paste("n绝对值的三次方z =", z))
   print("-------")
+  cat('\n')
 }
 
 
@@ -541,7 +584,7 @@ while(j <= nrow(df)) {
 # next
 # break
 
-######################################################
+# =================================================== #
 
 # 条件结构
 a <- 7
@@ -601,7 +644,7 @@ library(tidyverse)
 # 组成包介绍
 # https://www.tidyverse.org/
 
-######################################################
+# =================================================== #
 
 # csv数据导入
 rawdata <- read.table(file.choose(), header = T, sep = ",")
@@ -643,7 +686,7 @@ for (i in 1:length(paths)) {
 df_all <- bind_rows(df)
 
 
-######################################################
+# =================================================== #
 
 
 # dplyr
@@ -712,7 +755,7 @@ df1 %>% inner_join(df2, by = c('c2' = 'c3'))
 
 
 
-######################################################
+# =================================================== #
 
 # 列的分裂与合并
 library(tidyr)
@@ -734,7 +777,7 @@ df4 %>%
   unite(col = "c12", c("c9", "c10"), sep = ".", remove = T) %>%
   unite(col = "c13", c("c4", "c3"), sep = "", remove = F)
 
-#########
+# =================================================== #
 
 # 长宽数据转换
 library(tidyr)
@@ -786,7 +829,7 @@ plot(1:30)
 dev.off()
 
 
-#########
+# =================================================== #
 
 # plot函数
 plot(x = -1:6,
@@ -807,7 +850,7 @@ abline(v = 0, h = 3)
 # text函数
 text(x = 3, y = 2.5, labels = "y=3")
 
-#########
+# =================================================== #
 set.seed(432)
 d0 <- data.frame(rs1 = sample(letters[1:4], 100, replace = T),
                  rs2 = sample(LETTERS[21:22], 100, replace = T))
